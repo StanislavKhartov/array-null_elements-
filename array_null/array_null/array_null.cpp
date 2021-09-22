@@ -63,5 +63,6 @@ int main()
         pointer++;
     }
     printArray(array, length);
+    delete(array);
     return 0;
 }
