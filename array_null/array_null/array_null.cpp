@@ -3,6 +3,22 @@
 
 using namespace std;
 
+int* mergeArrays(int* firstArray, int* secondArray, int firstLength, int secondLength)
+{
+    int* array = new int[firstLength + secondLength];
+    for (int i = 0; i < firstLength; i++)
+    {
+        array[i] = firstArray[i];
+    }
+    for (int i = 0; i < secondLength; i++)
+    {
+        array[i + firstLength] = secondArray[i];
+    }
+    delete[]firstArray;
+    delete[]secondArray;
+    return array;
+}
+
 void printArray(int* array, int length)
 {
     for (int i = 0; i < length; i++)
@@ -18,9 +34,13 @@ int main()
     int length = 0;
     cin >> length;
     int* array = new int[length];
+    int* nullArray = new int[length];
     int state = 0;
     cout << "If you want to fill array with random numbers, enter 1, else enter 2\n";
     cin >> state;
+    int nullLength = 0;
+    int pointer1 = 0;
+    int pointer2 = 0;
     switch (state)
     {
     case 1:
@@ -37,31 +57,44 @@ int main()
         srand(NULL);
         for (int i = 0; i < length; i++)
         {
-            array[i] = (rand() % (upper_bound - lower_bound + 1) + lower_bound);
+            int tmp = (rand() % (upper_bound - lower_bound + 1) + lower_bound);
+            if (tmp == 0)
+            {
+                nullArray[pointer1] = 0;
+                pointer1++;
+                nullLength++;
+            }
+            else
+            {
+                array[pointer2] = tmp;
+                pointer2++;
+            }
         }
         break;
     case 2:
         cout << "PLease enter members of array\n";
+
         for (int i = 0; i < length; i++)
         {
-            cin >> array[i];
+            int tmp;
+            cin >> tmp;
+            if (tmp == 0)
+            {
+                nullArray[pointer1] = 0;
+                pointer1++;
+            }
+            else
+            {
+                array[pointer2] = tmp;
+                pointer2++;
+            }
         }
         break;
     default:
         return 1;
     }
-    printArray(array, length);
-    int pointer = 0;
-    int pointerLastNull = 0;
-    while (pointer != length)
-    {
-        if (array[pointer] == 0)
-        {
-            swap(array[pointer], array[pointerLastNull]);
-            pointerLastNull++;
-        }
-        pointer++;
-    }
-    printArray(array, length);
+    int* answer = mergeArrays(nullArray,array , pointer1, pointer2);
+    printArray(answer, length);
+    delete[]answer;
     return 0;
 }
